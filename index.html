@@ -18,27 +18,27 @@
    modern fintech dashboard.
    ============================================================ */
 :root {
-  --bg:       #080c10;
-  --bg2:      #0d1219;
-  --surface:  #111820;
-  --card:     #141c25;
-  --border:   #1c2a38;
-  --border2:  #243344;
+  --bg:       #f5f5f7;
+  --bg2:      #ffffff;
+  --surface:  #ffffff;
+  --card:     #ffffff;
+  --border:   #e0e0e5;
+  --border2:  #d0d0d8;
   --accent:   #f59e0b;
   --accent-d: #d97706;
   --accent-g: rgba(245,158,11,0.08);
-  --blue:     #38bdf8;
-  --green:    #34d399;
-  --red:      #f87171;
-  --warn:     #fbbf24;
-  --text:     #e2e8f0;
-  --text2:    #94a3b8;
-  --text3:    #475569;
+  --blue:     #0071e3;
+  --green:    #34c759;
+  --red:      #ff3b30;
+  --warn:     #ff9500;
+  --text:     #1d1d1f;
+  --text2:    #6e6e73;
+  --text3:    #aeaeb2;
   --mono:     'JetBrains Mono', monospace;
   --sans:     'Outfit', sans-serif;
   --display:  'Syne', sans-serif;
   --radius:   10px;
-  --shadow:   0 4px 24px rgba(0,0,0,0.4);
+  --shadow:   0 2px 12px rgba(0,0,0,0.08);
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -57,8 +57,8 @@ body {
 
 /* ── SCROLLBAR ── */
 ::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: var(--bg2); }
-::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+::-webkit-scrollbar-track { background: #f0f0f5; }
+::-webkit-scrollbar-thumb { background: #c7c7cc; border-radius: 2px; }
 
 /* ── TYPOGRAPHY ── */
 .display { font-family: var(--display); }
@@ -97,7 +97,7 @@ body {
 #login-screen {
   display: none;
   position: fixed; inset: 0;
-  background: var(--bg);
+  background: #f5f5f7;
   z-index: 1000;
   align-items: center;
   justify-content: center;
@@ -111,10 +111,10 @@ body {
 }
 
 .login-logo {
-  font-family: var(--display);
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 4px;
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 2px;
   text-transform: uppercase;
   color: var(--accent);
   text-align: center;
@@ -122,13 +122,14 @@ body {
 }
 
 .login-wordmark {
-  font-family: var(--display);
-  font-size: 42px;
-  font-weight: 800;
+  font-family: var(--sans);
+  font-size: 38px;
+  font-weight: 700;
   text-align: center;
   color: var(--text);
   line-height: 1;
   margin-bottom: 6px;
+  letter-spacing: -1px;
 }
 .login-wordmark span { color: var(--accent); }
 
@@ -151,7 +152,7 @@ body {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 4px;
-  background: var(--bg2);
+  background: #f5f5f7;
   border-radius: 8px;
   padding: 4px;
   margin-bottom: 24px;
@@ -186,7 +187,7 @@ body {
   transition: all .2s;
   margin-bottom: 16px;
 }
-.google-btn:hover { border-color: var(--accent); background: var(--bg2); }
+.google-btn:hover { border-color: var(--accent); background: #f5f5f7; }
 .google-icon { width: 18px; height: 18px; }
 
 .divider {
@@ -228,7 +229,7 @@ body {
   letter-spacing: .8px;
 }
 .field input, .field select, .field textarea {
-  background: var(--bg2);
+  background: #f5f5f7;
   border: 1px solid var(--border);
   border-radius: 8px;
   color: var(--text);
@@ -243,7 +244,7 @@ body {
   border-color: var(--accent);
 }
 .field input::placeholder, .field textarea::placeholder { color: var(--text3); }
-.field select option { background: var(--card); }
+.field select option { background: #ffffff; color: #1d1d1f; }
 .field textarea { resize: vertical; min-height: 72px; }
 
 .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
@@ -291,7 +292,7 @@ body {
    HEADER
    ============================================================ */
 #header {
-  background: var(--bg2);
+  background: #f5f5f7;
   border-bottom: 1px solid var(--border);
   height: 56px;
   display: flex;
@@ -304,14 +305,15 @@ body {
 }
 
 .header-logo {
-  font-family: var(--display);
-  font-size: 18px;
-  font-weight: 800;
+  font-family: var(--sans);
+  font-size: 17px;
+  font-weight: 700;
   color: var(--text);
   display: flex;
   align-items: center;
   gap: 6px;
   text-decoration: none;
+  letter-spacing: -0.2px;
 }
 .header-logo .dot { color: var(--accent); }
 
@@ -364,7 +366,7 @@ body {
 
 #sidebar {
   width: 220px;
-  background: var(--bg2);
+  background: #f5f5f7;
   border-right: 1px solid var(--border);
   padding: 16px 0;
   flex-shrink: 0;
@@ -395,7 +397,7 @@ body {
   text-decoration: none;
 }
 .nav-item:hover { color: var(--text); background: rgba(255,255,255,.03); }
-.nav-item.active { color: var(--accent); border-left-color: var(--accent); background: var(--accent-g); }
+.nav-item.active { color: var(--accent-d); border-left-color: var(--accent); background: rgba(245,158,11,0.08); }
 .nav-icon { font-size: 16px; width: 20px; text-align: center; }
 
 .nav-badge {
@@ -432,10 +434,11 @@ body {
    DASHBOARD
    ============================================================ */
 .page-title {
-  font-family: var(--display);
-  font-size: 26px;
-  font-weight: 800;
+  font-family: var(--sans);
+  font-size: 22px;
+  font-weight: 700;
   margin-bottom: 4px;
+  letter-spacing: -0.3px;
 }
 .page-subtitle { font-size: 13px; color: var(--text2); margin-bottom: 24px; }
 
@@ -453,6 +456,7 @@ body {
   padding: 18px 20px;
   position: relative;
   overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
 }
 .kpi-card::after {
   content: '';
@@ -467,11 +471,12 @@ body {
 
 .kpi-icon { font-size: 22px; margin-bottom: 10px; }
 .kpi-value {
-  font-family: var(--display);
-  font-size: 28px;
-  font-weight: 800;
+  font-family: var(--sans);
+  font-size: 26px;
+  font-weight: 700;
   line-height: 1;
   margin-bottom: 4px;
+  letter-spacing: -0.5px;
 }
 .kpi-label { font-size: 11px; color: var(--text2); text-transform: uppercase; letter-spacing: .5px; }
 
@@ -482,9 +487,10 @@ body {
   margin-bottom: 14px;
 }
 .section-title {
-  font-family: var(--display);
-  font-size: 16px;
+  font-family: var(--sans);
+  font-size: 15px;
   font-weight: 700;
+  color: var(--text);
 }
 
 /* ── CHARTS AREA ── */
@@ -544,6 +550,7 @@ body {
   overflow: hidden;
   cursor: pointer;
   transition: all .2s;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
 }
 .vehicle-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,.3); }
 
@@ -553,10 +560,11 @@ body {
 }
 .vehicle-type-emoji { font-size: 40px; margin-bottom: 10px; display: block; }
 .vehicle-name {
-  font-family: var(--display);
-  font-size: 20px;
-  font-weight: 800;
+  font-family: var(--sans);
+  font-size: 17px;
+  font-weight: 700;
   margin-bottom: 3px;
+  letter-spacing: -0.2px;
 }
 .vehicle-sub { font-size: 12px; color: var(--text2); font-family: var(--mono); }
 
@@ -585,7 +593,7 @@ body {
 .pill-amber  { background: rgba(245,158,11,.15);  color: var(--accent);border: 1px solid rgba(245,158,11,.3); }
 
 .vehicle-card-bottom {
-  background: var(--bg2);
+  background: #f5f5f7;
   border-top: 1px solid var(--border);
   padding: 14px 20px;
   display: flex;
@@ -593,7 +601,7 @@ body {
   align-items: center;
 }
 .vehicle-km-block .lbl { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: .5px; }
-.vehicle-km-block .val { font-family: var(--display); font-size: 20px; font-weight: 800; color: var(--accent); }
+.vehicle-km-block .val { font-family: var(--sans); font-size: 18px; font-weight: 700; color: var(--accent-d); letter-spacing: -0.3px; }
 
 .add-vehicle-card {
   background: transparent;
@@ -667,7 +675,7 @@ body {
 .modal-overlay {
   display: none;
   position: fixed; inset: 0;
-  background: rgba(0,0,0,.75);
+  background: rgba(0,0,0,.4);
   backdrop-filter: blur(4px);
   z-index: 500;
   align-items: center;
@@ -698,7 +706,7 @@ body {
   justify-content: space-between;
   margin-bottom: 20px;
 }
-.modal-title { font-family: var(--display); font-size: 20px; font-weight: 800; }
+.modal-title { font-family: var(--sans); font-size: 18px; font-weight: 700; letter-spacing: -0.2px; }
 
 .close-btn {
   width: 30px; height: 30px;
@@ -799,7 +807,7 @@ body {
 }
 .detail-emoji { font-size: 56px; flex-shrink: 0; }
 .detail-info { flex: 1; min-width: 0; }
-.detail-name { font-family: var(--display); font-size: 28px; font-weight: 800; margin-bottom: 4px; }
+.detail-name { font-family: var(--sans); font-size: 24px; font-weight: 700; margin-bottom: 4px; letter-spacing: -0.4px; }
 .detail-sub { font-family: var(--mono); font-size: 12px; color: var(--text2); margin-bottom: 12px; }
 .detail-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: auto; }
 
@@ -834,7 +842,7 @@ body {
   overflow: hidden;
 }
 .fleet-table th {
-  background: var(--bg2);
+  background: #f5f5f7;
   padding: 10px 14px;
   text-align: left;
   font-size: 10px;
@@ -856,7 +864,7 @@ body {
    CONFIG PAGE
    ============================================================ */
 .config-section {
-  background: var(--card);
+  background: #ffffff;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 20px;
@@ -921,7 +929,7 @@ body {
   display: none;
   position: fixed;
   bottom: 0; left: 0; right: 0;
-  background: var(--bg2);
+  background: #f5f5f7;
   border-top: 1px solid var(--border);
   z-index: 100;
   height: 60px;
@@ -2719,11 +2727,37 @@ window.addEventListener('DOMContentLoaded', async function() {
 });
 
 // Also expose enterDemo globally to make sure it's accessible
-window.enterDemo    = enterDemo;
-window.loginEmail   = loginEmail;
-window.loginGoogle  = loginGoogle;
-window.registerEmail = registerEmail;
-window.switchLoginTab = switchLoginTab;
+// Expose ALL functions globally
+window.enterDemo       = enterDemo;
+window.loginEmail      = loginEmail;
+window.loginGoogle     = loginGoogle;
+window.registerEmail   = registerEmail;
+window.switchLoginTab  = switchLoginTab;
+window.showPage        = showPage;
+window.openModal       = openModal;
+window.closeModal      = closeModal;
+window.openDetail      = openDetail;
+window.openMaintenanceFor = openMaintenanceFor;
+window.openKmUpdate    = openKmUpdate;
+window.saveVehicle     = saveVehicle;
+window.saveMaintenance = saveMaintenance;
+window.saveKm          = saveKm;
+window.deleteVehicle   = deleteVehicle;
+window.deleteRecord    = deleteRecord;
+window.selVType        = selVType;
+window.selCat          = selCat;
+window.selStock        = selStock;
+window.calcTotal       = calcTotal;
+window.calcNextKm      = calcNextKm;
+window.exportPDF       = exportPDF;
+window.exportXLSX      = exportXLSX;
+window.exportXML       = exportXML;
+window.saveSupabaseConfig = saveSupabaseConfig;
+window.setMode         = setMode;
+window.copySQL         = copySQL;
+window.doLogout        = doLogout;
+window.renderHistory   = renderHistory;
+window.updateExpPreview = updateExpPreview;
 
 })(); // end PistonFix namespace
 </script>
