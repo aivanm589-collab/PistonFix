@@ -1955,7 +1955,9 @@ async function openDetail(vehicleId) {
       </div>`;
   }).join('');
 
-  document.getElementById('detail-content').innerHTML = `
+  const detailEl = document.getElementById('detail-content');
+  detailEl.dataset.vehicleId = vehicleId;
+  detailEl.innerHTML = `
     <div class="detail-hero">
       <div class="detail-emoji">${V_ICONS[v.type]||'🚗'}</div>
       <div class="detail-info">
@@ -2006,11 +2008,16 @@ async function openDetail(vehicleId) {
 }
 
 function openMaintenanceFor(vehicleId) {
+  // Open modal and wait for vehicles to load before setting the selected vehicle
   openModal('modal-add-maintenance');
-  setTimeout(() => {
+  getVehicles().then(vehicles => {
     const sel = document.getElementById('mf-vehicle');
-    if (sel) sel.value = vehicleId;
-  }, 50);
+    if (!sel) return;
+    // Re-populate with all vehicles
+    sel.innerHTML = vehicles.map(v =>
+      `<option value="${v.id}" ${v.id === vehicleId ? 'selected' : ''}>${V_ICONS[v.type]||'🚗'} ${v.name}</option>`
+    ).join('');
+  });
 }
 
 // ════════════════════════════════════════════════════════
@@ -2372,15 +2379,29 @@ async function deleteVehicle(id) {
   if (!confirm('¿Eliminar este vehículo y todos sus registros?')) return;
   await deleteVehicleDB(id);
   toast('🗑 Vehículo eliminado');
+  await Promise.all([renderDashboard(), renderVehicles()]);
   showPage('vehicles');
-  await renderDashboard();
 }
 
 async function deleteRecord(id) {
   if (!confirm('¿Eliminar este registro?')) return;
   await deleteRecordDB(id);
   toast('🗑 Registro eliminado');
+
+  // Refresh whichever page is currently visible
   await renderDashboard();
+  if (document.getElementById('page-history')?.classList.contains('active')) {
+    await renderHistory();
+  }
+  if (document.getElementById('page-detail')?.classList.contains('active')) {
+    // Find which vehicle detail is open and re-render it
+    const detailContent = document.getElementById('detail-content');
+    const vehicleId = detailContent?.dataset?.vehicleId;
+    if (vehicleId) await openDetail(vehicleId);
+  }
+  if (document.getElementById('page-fleet')?.classList.contains('active')) {
+    await renderFleet();
+  }
 }
 
 // ════════════════════════════════════════════════════════
@@ -2622,7 +2643,14 @@ function openModal(id) {
   if (id === 'modal-add-maintenance') {
     getVehicles().then(vehicles => {
       const sel = document.getElementById('mf-vehicle');
-      sel.innerHTML = vehicles.map(v => `<option value="${v.id}">${V_ICONS[v.type]||'🚗'} ${v.name}</option>`).join('');
+      if (!sel) return;
+      const current = sel.value; // preserve selection if any
+      sel.innerHTML = vehicles.map(v =>
+        `<option value="${v.id}">${V_ICONS[v.type]||'🚗'} ${v.name}</option>`
+      ).join('');
+      if (current && sel.querySelector(`option[value="${current}"]`)) {
+        sel.value = current;
+      }
     });
     document.getElementById('mf-date').value = new Date().toISOString().split('T')[0];
     // Reset fields
