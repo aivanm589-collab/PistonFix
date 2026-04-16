@@ -2281,8 +2281,8 @@ async function saveVehicle() {
     await insertVehicle(obj);
     closeModal('modal-add-vehicle');
     toast('✅ Vehículo guardado');
-    await renderVehicles();
-    await renderDashboard();
+    // BUG FIX 1: force re-render of all pages with fresh data
+    await Promise.all([renderVehicles(), renderDashboard()]);
   } catch(e) { toast('❌ Error: ' + e.message); }
 }
 
@@ -2327,8 +2327,20 @@ async function saveMaintenance() {
 
     closeModal('modal-add-maintenance');
     toast('✅ Servicio registrado');
-    await renderDashboard();
-    await renderVehicles();
+
+    // BUG FIX 1: always refresh dashboard and vehicles with latest data
+    await Promise.all([renderDashboard(), renderVehicles()]);
+
+    // Also refresh history filter dropdowns so new vehicle shows up
+    const vSel = document.getElementById('filter-vehicle');
+    if (vSel) vSel.innerHTML = '<option value="">Todos los vehículos</option>';
+    const expSel = document.getElementById('exp-vehicle');
+    if (expSel) expSel.innerHTML = '<option value="">Todos los vehículos</option>';
+
+    // If detail page is open, refresh it
+    if (document.getElementById('page-detail')?.classList.contains('active')) {
+      await openDetail(vehicleId);
+    }
   } catch(e) { toast('❌ Error: ' + e.message); }
 }
 
@@ -2595,6 +2607,17 @@ function recordRowHtml(r, vehicles, showDelete=false) {
 // MODAL HELPERS
 // ════════════════════════════════════════════════════════
 function openModal(id) {
+  // BUG FIX 2: Clear vehicle form every time it opens
+  if (id === 'modal-add-vehicle') {
+    ['vf-name','vf-brand','vf-model','vf-year','vf-color','vf-plates','vf-eco','vf-vin','vf-km','vf-notes'].forEach(fid => {
+      const el = document.getElementById(fid); if(el) el.value = '';
+    });
+    // Reset type selector to 'car'
+    document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('selected'));
+    document.querySelector('.type-btn[data-t="car"]')?.classList.add('selected');
+    currentVehicleType = 'car';
+  }
+
   // Populate vehicle selector in maintenance modal
   if (id === 'modal-add-maintenance') {
     getVehicles().then(vehicles => {
