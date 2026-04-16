@@ -965,8 +965,57 @@ body {
   .vehicles-grid { grid-template-columns: 1fr; }
 }
 
-/* Utility */
-.sep { height: 1px; background: var(--border); margin: 16px 0; }
+/* ── UPCOMING SERVICES ── */
+.upcoming-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  margin-bottom: 8px;
+  transition: border-color .2s;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+.upcoming-card:hover { border-color: var(--accent); }
+.upcoming-date-block {
+  min-width: 52px;
+  text-align: center;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 8px;
+  flex-shrink: 0;
+}
+.upcoming-date-day {
+  font-family: var(--sans);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--accent-d);
+  line-height: 1;
+}
+.upcoming-date-mon {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text2);
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  margin-top: 2px;
+}
+.upcoming-km-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 20px;
+  margin-top: 4px;
+}
+.upcoming-urgency-high { background: rgba(255,59,48,.1); color: var(--red); border: 1px solid rgba(255,59,48,.25); }
+.upcoming-urgency-med  { background: rgba(255,149,0,.1); color: var(--warn); border: 1px solid rgba(255,149,0,.25); }
+.upcoming-urgency-low  { background: rgba(52,199,89,.1); color: var(--green); border: 1px solid rgba(52,199,89,.25); }
 .text-accent { color: var(--accent); }
 .text-muted  { color: var(--text2); }
 .text-red    { color: var(--red); }
@@ -1143,6 +1192,12 @@ body {
           <button class="btn btn-ghost btn-sm" onclick="showPage('alerts')">Ver todos</button>
         </div>
         <div id="dash-alerts"></div>
+
+        <div class="section-header" style="margin-top:20px;">
+          <div class="section-title">📅 Próximos servicios</div>
+          <button class="btn btn-ghost btn-sm" onclick="showPage('alerts')">Ver todos</button>
+        </div>
+        <div id="dash-upcoming"></div>
 
         <div class="section-header" style="margin-top:20px;">
           <div class="section-title">🔧 Últimos servicios</div>
@@ -1864,7 +1919,109 @@ async function renderDashboard() {
   recentEl.innerHTML = records.slice(0,5).map(r => recordRowHtml(r, vehicles)).join('')
     || `<div class="empty"><div class="empty-icon">📋</div><div class="empty-title">Sin servicios aún</div></div>`;
 
+  // ── UPCOMING SERVICES ──
+  renderUpcoming(vehicles, records);
+
   updateAlertBadge(alerts);
+}
+
+function renderUpcoming(vehicles, records) {
+  const el = document.getElementById('dash-upcoming');
+  if (!el) return;
+
+  const today = new Date();
+  today.setHours(0,0,0,0);
+
+  // Build upcoming list from records that have next_km or next_date
+  const upcoming = [];
+
+  vehicles.forEach(v => {
+    const vRecs = records.filter(r => r.vehicle_id === v.id);
+    vRecs.forEach(r => {
+      // By KM — estimate date based on average daily km (assume ~100 km/day default)
+      if (r.next_km && v.km_actual) {
+        const kmLeft = r.next_km - v.km_actual;
+        if (kmLeft > 0 && kmLeft <= 15000) {
+          // Estimate days: use 100 km/day as baseline
+          const daysLeft = Math.round(kmLeft / 100);
+          const estDate = new Date(today);
+          estDate.setDate(estDate.getDate() + daysLeft);
+          upcoming.push({
+            vehicle: v,
+            record: r,
+            kmLeft,
+            daysLeft,
+            estDate,
+            type: 'km',
+            label: `${r.next_km.toLocaleString()} km`,
+          });
+        }
+      }
+      // By exact date
+      if (r.next_date) {
+        const nextDate = new Date(r.next_date + 'T12:00:00');
+        const daysLeft = Math.round((nextDate - today) / (1000 * 60 * 60 * 24));
+        if (daysLeft >= 0 && daysLeft <= 90) {
+          upcoming.push({
+            vehicle: v,
+            record: r,
+            kmLeft: null,
+            daysLeft,
+            estDate: nextDate,
+            type: 'date',
+            label: nextDate.toLocaleDateString('es-MX', { day:'2-digit', month:'short', year:'numeric' }),
+          });
+        }
+      }
+    });
+  });
+
+  // Sort by days left ascending
+  upcoming.sort((a, b) => a.daysLeft - b.daysLeft);
+
+  if (upcoming.length === 0) {
+    el.innerHTML = `
+      <div class="upcoming-card" style="justify-content:center;color:var(--text2);">
+        <span style="font-size:20px;">📅</span>
+        <span style="font-size:13px;">No hay servicios próximos registrados — agrega "Próximo KM" o "Próxima fecha" al registrar un servicio</span>
+      </div>`;
+    return;
+  }
+
+  el.innerHTML = upcoming.slice(0, 8).map(u => {
+    const cat = CATEGORIES.find(c => c.id === u.record.category);
+    const day  = u.estDate.getDate();
+    const mon  = u.estDate.toLocaleDateString('es-MX', { month: 'short' }).toUpperCase();
+
+    // Urgency
+    let urgencyClass, urgencyLabel;
+    if (u.daysLeft <= 7)       { urgencyClass = 'upcoming-urgency-high'; urgencyLabel = '🔴 Esta semana'; }
+    else if (u.daysLeft <= 30) { urgencyClass = 'upcoming-urgency-med';  urgencyLabel = `⚠️ En ${u.daysLeft} días`; }
+    else                       { urgencyClass = 'upcoming-urgency-low';  urgencyLabel = `✅ En ${u.daysLeft} días`; }
+
+    const kmBadge = u.kmLeft !== null
+      ? `<span class="${urgencyClass} upcoming-km-badge">📍 Faltan ${u.kmLeft.toLocaleString()} km</span>`
+      : `<span class="${urgencyClass} upcoming-km-badge">📅 ${u.label}</span>`;
+
+    const vName = `${u.vehicle.name}${u.vehicle.eco ? ' · Eco: '+u.vehicle.eco : ''}${u.vehicle.plates ? ' · '+u.vehicle.plates : ''}`;
+
+    return `
+      <div class="upcoming-card" onclick="openDetail('${u.vehicle.id}')">
+        <div class="upcoming-date-block">
+          <div class="upcoming-date-day">${day}</div>
+          <div class="upcoming-date-mon">${mon}</div>
+        </div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:14px;font-weight:600;margin-bottom:2px;">${u.record.description}</div>
+          <div style="font-size:11px;color:var(--text2);margin-bottom:5px;">${cat?.icon||'🔧'} ${cat?.label||'Servicio'} · ${vName}</div>
+          ${kmBadge}
+        </div>
+        <div style="font-size:11px;color:var(--text2);text-align:right;flex-shrink:0;">
+          ${u.type === 'km' ? `<div style="font-family:var(--mono);font-size:10px;color:var(--accent-d);">~${u.label}</div>` : ''}
+          <div style="font-size:10px;color:var(--text3);margin-top:4px;">${urgencyLabel}</div>
+        </div>
+      </div>`;
+  }).join('');
 }
 
 // ════════════════════════════════════════════════════════
@@ -2861,6 +3018,7 @@ window.copySQL         = copySQL;
 window.doLogout        = doLogout;
 window.renderHistory   = renderHistory;
 window.updateExpPreview = updateExpPreview;
+window.renderUpcoming  = renderUpcoming;
 
 })(); // end PistonFix namespace
 </script>
