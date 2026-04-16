@@ -2415,80 +2415,132 @@ async function exportPDF() {
   const pH  = doc.internal.pageSize.getHeight();
   const m   = 14;
 
-  // Header
-  doc.setFillColor(8,12,16);
-  doc.rect(0,0,pW,22,'F');
+  // ── HEADER — white bg, amber accent bar ──
+  doc.setFillColor(255,255,255);
+  doc.rect(0,0,pW,24,'F');
   doc.setFillColor(245,158,11);
-  doc.rect(0,0,3,22,'F');
+  doc.rect(0,0,4,24,'F');
+  // Thin border bottom
+  doc.setDrawColor(224,224,229);
+  doc.setLineWidth(0.3);
+  doc.line(0,24,pW,24);
+
   doc.setFont('helvetica','bold');
-  doc.setFontSize(16); doc.setTextColor(245,158,11);
-  doc.text('PistonFix', 10, 13);
+  doc.setFontSize(17); doc.setTextColor(29,29,31);
+  doc.text('PistonFix', 12, 14);
   doc.setFont('helvetica','normal');
-  doc.setFontSize(7); doc.setTextColor(150,150,150);
-  doc.text('Vehicle Maintenance & Fleet Management', 10, 19);
-  doc.text(`Generado: ${new Date().toLocaleDateString('es-MX')} · ${currentUser?.email||''}`, pW-m, 13, {align:'right'});
+  doc.setFontSize(7); doc.setTextColor(110,110,115);
+  doc.text('Vehicle Maintenance & Fleet Management', 12, 20);
+  doc.setFontSize(7); doc.setTextColor(150,150,155);
+  doc.text(`Generated: ${new Date().toLocaleDateString('en-US')}  ·  ${currentUser?.email||''}`, pW-m, 14, {align:'right'});
 
-  let y = 30;
+  let y = 32;
   const total = records.reduce((s,r)=>s+(r.total_cost||0),0);
-  // Summary
-  [[vehicles.length,'Vehículos'],[records.length,'Servicios'],['$'+fmtMoney(total),'Total MXN']].forEach(([val,lbl],i)=>{
-    const bx = m + i*52;
-    doc.setFillColor(20,28,37); doc.roundedRect(bx,y,48,14,1.5,1.5,'F');
-    doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(245,158,11);
-    doc.text(String(val), bx+24, y+7, {align:'center'});
-    doc.setFont('helvetica','normal'); doc.setFontSize(6); doc.setTextColor(100,120,140);
-    doc.text(lbl.toUpperCase(), bx+24, y+12, {align:'center'});
-  });
-  y += 22;
 
-  const stockLabels = {disponible:'En stock',por_pedir:'Por pedir',en_pedido:'En pedido',sin_stock:'Sin stock'};
+  // ── SUMMARY CARDS ──
+  [[vehicles.length,'Vehicles'],[records.length,'Services'],['$'+fmtMoney(total),'Total']].forEach(([val,lbl],i)=>{
+    const bx = m + i*54;
+    // Card bg
+    doc.setFillColor(245,245,247);
+    doc.setDrawColor(224,224,229);
+    doc.setLineWidth(0.3);
+    doc.roundedRect(bx,y,50,16,2,2,'FD');
+    // Amber top accent
+    doc.setFillColor(245,158,11);
+    doc.roundedRect(bx,y,50,2.5,1,1,'F');
+    doc.setFont('helvetica','bold'); doc.setFontSize(13); doc.setTextColor(29,29,31);
+    doc.text(String(val), bx+25, y+10, {align:'center'});
+    doc.setFont('helvetica','normal'); doc.setFontSize(6); doc.setTextColor(110,110,115);
+    doc.text(lbl.toUpperCase(), bx+25, y+14.5, {align:'center'});
+  });
+  y += 24;
+
+  const stockLabels = {disponible:'In stock',por_pedir:'To order',en_pedido:'On order',sin_stock:'No stock'};
 
   vehicles.forEach(v => {
     const vRecs = records.filter(r=>r.vehicle_id===v.id);
     if (!vRecs.length) return;
     if (y > pH-60) { doc.addPage(); y=16; }
 
-    doc.setFillColor(20,28,37); doc.roundedRect(m,y,pW-m*2,10,1.5,1.5,'F');
-    doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(226,232,240);
-    const hdr = `${v.name}${v.eco?' · Eco:'+v.eco:''}${v.plates?' · '+v.plates:''}${[v.brand,v.model,v.year].filter(Boolean).length?' · '+[v.brand,v.model,v.year].filter(Boolean).join(' '):''}`;
-    doc.text(hdr, m+3, y+7);
-    const vTot = vRecs.reduce((s,r)=>s+(r.total_cost||0),0);
-    doc.setTextColor(245,158,11);
-    doc.text('$'+fmtMoney(vTot), pW-m-2, y+7, {align:'right'});
-    y += 13;
+    // ── VEHICLE HEADER BAR ──
+    doc.setFillColor(245,245,247);
+    doc.setDrawColor(224,224,229);
+    doc.setLineWidth(0.3);
+    doc.roundedRect(m,y,pW-m*2,11,1.5,1.5,'FD');
+    // Left amber accent
+    doc.setFillColor(245,158,11);
+    doc.roundedRect(m,y,3,11,1,1,'F');
 
+    doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(29,29,31);
+    const hdr = `${v.name}${v.eco?' · Eco: '+v.eco:''}${v.plates?' · '+v.plates:''}${[v.brand,v.model,v.year].filter(Boolean).length?' · '+[v.brand,v.model,v.year].filter(Boolean).join(' '):''}`;
+    doc.text(hdr, m+6, y+7.5);
+    const vTot = vRecs.reduce((s,r)=>s+(r.total_cost||0),0);
+    doc.setTextColor(217,119,6);
+    doc.text('$'+fmtMoney(vTot), pW-m-2, y+7.5, {align:'right'});
+    y += 14;
+
+    // ── TABLE ──
     doc.autoTable({
       startY: y, margin: {left:m,right:m},
-      head: [['Fecha','Categ.','Descripción','Taller','KM','Piezas','M.Obra','Refacc.','Total','Stock','Próx.KM']],
+      head: [['Date','Category','Description','Shop','KM','Parts','Labor','Parts$','Total','Stock','Next KM']],
       body: vRecs.map(r=>{
         const cat = CATEGORIES.find(c=>c.id===r.category);
-        return [fmtDate(r.date),cat?.label||'Otro',r.description,r.shop||'-',(r.km||0).toLocaleString(),r.parts||'-',
-          r.labor_cost?'$'+fmtMoney(r.labor_cost):'-', r.part_cost?'$'+fmtMoney(r.part_cost):'-',
-          '$'+fmtMoney(r.total_cost||0), r.stock?stockLabels[r.stock]||'-':'-',
-          r.next_km?(r.next_km.toLocaleString()+' km'):'-'];
+        return [
+          fmtDate(r.date), cat?.label||'Other', r.description, r.shop||'-',
+          (r.km||0).toLocaleString(), r.parts||'-',
+          r.labor_cost?'$'+fmtMoney(r.labor_cost):'-',
+          r.part_cost?'$'+fmtMoney(r.part_cost):'-',
+          '$'+fmtMoney(r.total_cost||0),
+          r.stock?stockLabels[r.stock]||'-':'-',
+          r.next_km?(r.next_km.toLocaleString()+' km'):'-'
+        ];
       }),
-      styles:{fontSize:6.5,cellPadding:2.5,textColor:[200,210,220],fillColor:[17,24,32],lineColor:[28,42,56],lineWidth:.25},
-      headStyles:{fillColor:[28,42,56],textColor:[130,150,180],fontStyle:'bold',fontSize:6},
-      alternateRowStyles:{fillColor:[20,28,38]},
+      styles:{
+        fontSize:6.5, cellPadding:2.8,
+        textColor:[29,29,31],
+        fillColor:[255,255,255],
+        lineColor:[224,224,229],
+        lineWidth:.25
+      },
+      headStyles:{
+        fillColor:[245,245,247],
+        textColor:[110,110,115],
+        fontStyle:'bold',
+        fontSize:6,
+        lineColor:[224,224,229],
+        lineWidth:.3
+      },
+      alternateRowStyles:{ fillColor:[250,250,252] },
       columnStyles:{
-        0:{cellWidth:20},1:{cellWidth:18},2:{cellWidth:'auto'},3:{cellWidth:22},
-        4:{cellWidth:18},5:{cellWidth:22},6:{cellWidth:16,textColor:[56,189,248]},
-        7:{cellWidth:16,textColor:[56,189,248]},8:{cellWidth:16,textColor:[245,158,11],fontStyle:'bold'},
-        9:{cellWidth:18,textColor:[150,200,150]},10:{cellWidth:18,textColor:[59,130,246]},
+        0:{cellWidth:20},
+        1:{cellWidth:18},
+        2:{cellWidth:'auto'},
+        3:{cellWidth:22},
+        4:{cellWidth:18},
+        5:{cellWidth:22},
+        6:{cellWidth:16, textColor:[0,113,227]},
+        7:{cellWidth:16, textColor:[0,113,227]},
+        8:{cellWidth:16, textColor:[217,119,6], fontStyle:'bold'},
+        9:{cellWidth:18, textColor:[52,199,89]},
+        10:{cellWidth:18, textColor:[110,110,115]},
       },
     });
-    y = doc.lastAutoTable.finalY + 8;
+    y = doc.lastAutoTable.finalY + 10;
   });
 
+  // ── FOOTER ──
   const pages = doc.internal.getNumberOfPages();
   for(let i=1;i<=pages;i++){
     doc.setPage(i);
-    doc.setFontSize(6.5); doc.setTextColor(80,80,80);
-    doc.text(`Pag. ${i} de ${pages}  |  PistonFix  |  ${new Date().toLocaleDateString('es-MX')}`, pW/2, pH-4, {align:'center'});
+    doc.setDrawColor(224,224,229);
+    doc.setLineWidth(0.3);
+    doc.line(m, pH-8, pW-m, pH-8);
+    doc.setFontSize(6.5); doc.setTextColor(150,150,155);
+    doc.text(`Page ${i} of ${pages}  ·  PistonFix  ·  ${new Date().toLocaleDateString('en-US')}`, pW/2, pH-4, {align:'center'});
   }
 
   doc.save(`PistonFix_${new Date().toISOString().split('T')[0]}.pdf`);
-  toast('📄 PDF descargado');
+  toast('📄 PDF downloaded');
 }
 
 // ════════════════════════════════════════════════════════
