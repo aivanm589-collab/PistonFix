@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "com.pistonfix.twa",
+        "sha256_cert_fingerprints": ["BC:5F:F9:9B:0A:4E:D4:B6:FD:84:B4:9F:75:1D:1A:DB:AA:28:63:E3:EE:06:9C:65:0D:E8:BA:04:43:D8:0A:53"]
+      }
+    }]
