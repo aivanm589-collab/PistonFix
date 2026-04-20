@@ -1778,7 +1778,8 @@ async function deleteRecordDB(id) {
 // ════════════════════════════════════════════════════════
 async function initApp() {
   loadLocal();
-  document.getElementById('sql-script').value = SQL_SCRIPT;
+  const sqlEl = document.getElementById('sql-script');
+  if (sqlEl) sqlEl.value = SQL_SCRIPT;
   setMode(appMode, false);
 
   // Fill category grid
@@ -2381,12 +2382,6 @@ async function getExportData() {
 // CONFIG PAGE
 // ════════════════════════════════════════════════════════
 function renderConfig() {
-  // Show connected status
-  const sbUrlEl = document.getElementById('sb-url');
-  const sbKeyEl = document.getElementById('sb-key');
-  if (sbUrlEl) sbUrlEl.value = SUPABASE_URL;
-  if (sbKeyEl) sbKeyEl.value = SUPABASE_KEY.slice(0,40) + '...';
-
   const user = currentUser;
   document.getElementById('account-info').innerHTML = user ? `
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
