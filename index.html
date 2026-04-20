@@ -4,15 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#f59e0b">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="PistonFix">
-<meta name="description" content="Vehicle maintenance tracker and fleet management">
-<link rel="manifest" href="/manifest.json">
-<link rel="apple-touch-icon" href="/icon-192.png">
-<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
-<link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png">
 <title>PistonFix — Vehicle Maintenance & Fleet</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -1301,33 +1292,7 @@ body {
       <!-- ── CONFIG ── -->
       <div class="page" id="page-config">
         <div class="page-title">Configuración</div>
-        <div class="page-subtitle">Conexión Supabase y preferencias</div>
-
-        <div class="config-section">
-          <div class="config-section-title">🔌 Conexión Supabase</div>
-          <p style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.7;">
-            Ve a <strong style="color:var(--accent)">supabase.com</strong> → Tu proyecto → Settings → API.<br>
-            Copia la <strong>Project URL</strong> y la <strong>anon public key</strong>.
-          </p>
-          <div class="field">
-            <label>Project URL</label>
-            <input type="text" id="sb-url" placeholder="https://xxxx.supabase.co">
-          </div>
-          <div class="field">
-            <label>Anon Key</label>
-            <input type="text" id="sb-key" placeholder="eyJhbGciOiJIUzI1NiIsInR5...">
-          </div>
-          <button class="btn btn-primary" onclick="saveSupabaseConfig()">💾 Guardar y conectar</button>
-        </div>
-
-        <div class="config-section">
-          <div class="config-section-title">🗄️ SQL — Crear tablas en Supabase</div>
-          <p style="font-size:13px;color:var(--text2);margin-bottom:12px;">
-            Ejecuta este SQL en <strong style="color:var(--accent)">Supabase → SQL Editor</strong>:
-          </p>
-          <textarea id="sql-script" readonly style="width:100%;height:260px;font-family:var(--mono);font-size:11px;background:var(--bg);border:1px solid var(--border);color:var(--text2);border-radius:8px;padding:12px;resize:vertical;line-height:1.5;"></textarea>
-          <button class="btn btn-ghost btn-sm" style="margin-top:8px;" onclick="copySQL()">📋 Copiar SQL</button>
-        </div>
+        <div class="page-subtitle">Preferencias de tu cuenta</div>
 
         <div class="config-section">
           <div class="config-section-title">👤 Mi cuenta</div>
@@ -1336,14 +1301,39 @@ body {
 
         <div class="config-section">
           <div class="config-section-title">🏢 Modo de uso</div>
+          <p style="font-size:13px;color:var(--text2);margin-bottom:14px;">Elige cómo quieres usar PistonFix.</p>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
             <div id="mode-personal-btn" class="type-btn selected" onclick="setMode('personal')">
-              <span class="ci">👤</span>Personal<br><small style="color:var(--text3);font-size:10px;">1 usuario, mis autos</small>
+              <span class="ci">👤</span>Personal<br><small style="color:var(--text3);font-size:10px;">Mis vehículos</small>
             </div>
             <div id="mode-fleet-btn" class="type-btn" onclick="setMode('fleet')">
-              <span class="ci">🏢</span>Flotilla<br><small style="color:var(--text3);font-size:10px;">Empresa, múltiples usuarios</small>
+              <span class="ci">🏢</span>Flotilla<br><small style="color:var(--text3);font-size:10px;">Empresa y flotilla</small>
             </div>
           </div>
+        </div>
+
+        <div class="config-section">
+          <div class="config-section-title">📋 Acerca de PistonFix</div>
+          <div style="font-size:13px;color:var(--text2);line-height:1.8;">
+            <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);">
+              <span>Versión</span><span style="font-weight:600;color:var(--text);">1.0.0</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);">
+              <span>Sitio web</span><a href="https://pistonfix.com" style="color:var(--accent);text-decoration:none;">pistonfix.com</a>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);">
+              <span>Privacidad</span><a href="https://pistonfix.com/privacy.html" style="color:var(--accent);text-decoration:none;">Ver política</a>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:6px 0;">
+              <span>Eliminar cuenta</span><a href="https://pistonfix.com/delete-account.html" style="color:var(--red);text-decoration:none;">Solicitar eliminación</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="config-section">
+          <div class="config-section-title">📧 Soporte</div>
+          <p style="font-size:13px;color:var(--text2);margin-bottom:12px;">¿Tienes algún problema o sugerencia?</p>
+          <a href="mailto:support@pistonfix.com" class="btn btn-ghost btn-full">✉️ Contactar soporte</a>
         </div>
       </div>
 
@@ -3030,17 +3020,6 @@ window.updateExpPreview = updateExpPreview;
 window.renderUpcoming  = renderUpcoming;
 
 })(); // end PistonFix namespace
-</script>
-
-<script>
-  // Register Service Worker
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/sw.js')
-        .then(reg => console.log('SW registered:', reg.scope))
-        .catch(err => console.log('SW error:', err));
-    });
-  }
 </script>
 </body>
 </html>
