@@ -3,12 +3,12 @@
   "name": "PistonFix - Vehicle Maintenance",
   "short_name": "PistonFix",
   "description": "Vehicle maintenance tracker and fleet management app for personal vehicles and fleets.",
-  "start_url": "/PistonFix/",
+  "start_url": ".",
   "display": "standalone",
   "background_color": "#f5f5f7",
   "theme_color": "#f59e0b",
   "orientation": "portrait-primary",
-  "scope": "/PistonFix/",
+  "scope": ".",
   "lang": "es",
   "dir": "ltr",
   "categories": ["business", "productivity", "utilities"],
@@ -52,13 +52,13 @@
     {
       "name": "Agregar servicio",
       "short_name": "Servicio",
-      "url": "/PistonFix/",
+      "url": ".",
       "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
     },
     {
       "name": "Mis vehículos",
       "short_name": "Vehículos",
-      "url": "/PistonFix/",
+      "url": ".",
       "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
     }
   ]
