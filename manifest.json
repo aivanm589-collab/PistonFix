@@ -1,0 +1,65 @@
+{
+  "id": "com.pistonfix.app",
+  "name": "PistonFix - Vehicle Maintenance",
+  "short_name": "PistonFix",
+  "description": "Vehicle maintenance tracker and fleet management app for personal vehicles and fleets.",
+  "start_url": "/PistonFix/",
+  "display": "standalone",
+  "background_color": "#f5f5f7",
+  "theme_color": "#f59e0b",
+  "orientation": "portrait-primary",
+  "scope": "/PistonFix/",
+  "lang": "es",
+  "dir": "ltr",
+  "categories": ["business", "productivity", "utilities"],
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "PistonFix Dashboard"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Agregar servicio",
+      "short_name": "Servicio",
+      "url": "/PistonFix/",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Mis vehículos",
+      "short_name": "Vehículos",
+      "url": "/PistonFix/",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}
