@@ -28,12 +28,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
     if (uid == null) return;
     try {
       final vehicles = await _sb.from('vehicles').select('id').eq('user_id', uid);
-      final maintenance = await _sb.from('maintenance_records').select('cost_parts, cost_labor, next_km, next_date').eq('user_id', uid);
+      final maintenance = await _sb.from('maintenance_records').select('part_cost, labor_cost, next_km, next_date').eq('user_id', uid);
       double total = 0;
       int pending = 0;
       for (final r in maintenance) {
-        total += ((r['cost_parts'] ?? 0) as num).toDouble();
-        total += ((r['cost_labor'] ?? 0) as num).toDouble();
+        total += ((r['part_cost'] ?? 0) as num).toDouble();
+        total += ((r['labor_cost'] ?? 0) as num).toDouble();
         final nextKm = r['next_km'] as int?;
         if (nextKm != null && nextKm > 0) pending++;
       }

@@ -102551,15 +102551,15 @@ s=7
 return A.A(d.kj("vehicles").vl("id").oz("user_id",m),$async$rR)
 case 7:l=a0
 s=8
-return A.A(d.kj("maintenance_records").vl("cost_parts, cost_labor, next_km, next_date").oz("user_id",m),$async$rR)
+return A.A(d.kj("maintenance_records").vl("part_cost, labor_cost, next_km, next_date").oz("user_id",m),$async$rR)
 case 8:k=a0
 h.a=h.b=0
 for(d=J.b_(k);d.n();){j=d.gO()
 c=h.b
-g=J.d3(j,"cost_parts")
+g=J.d3(j,"part_cost")
 f=c+A.eG(g==null?0:g)
 h.b=f
-c=J.d3(j,"cost_labor")
+c=J.d3(j,"labor_cost")
 h.b=f+A.eG(c==null?0:c)
 i=A.hf(J.d3(j,"next_km"))
 if(i!=null&&i>0)++h.a}if(n.c!=null)n.ac(new A.axY(h,n,l))
