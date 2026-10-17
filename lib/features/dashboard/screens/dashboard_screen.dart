@@ -72,7 +72,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 Row(children: [
                   Expanded(child: _KpiCard(label: 'Vehículos', value: '$_totalVehicles', icon: Icons.directions_car)),
                   const SizedBox(width: 12),
-                  Expanded(child: _KpiCard(label: 'Servicios pendientes', value: '$_pendingServices', icon: Icons.build, color: _pendingServices > 0 ? Colors.orange : AppTheme.amber)),
+                  Expanded(child: _KpiCard(label: 'Servicios pendientes', value: '$_pendingServices', icon: Icons.build, color: _pendingServices > 0 ? Colors.orange : AppTheme.amber, onTap: _pendingServices > 0 ? () => context.go('/maintenance') : null)),
                 ]),
                 const SizedBox(height: 12),
                 _KpiCard(label: 'Costo total acumulado', value: '\$${_totalCost.toStringAsFixed(0)} MXN', icon: Icons.attach_money, wide: true),
@@ -96,12 +96,16 @@ class _KpiCard extends StatelessWidget {
   final IconData icon;
   final Color? color;
   final bool wide;
-  const _KpiCard({required this.label, required this.value, required this.icon, this.color, this.wide = false});
+  final VoidCallback? onTap;
+  const _KpiCard({required this.label, required this.value, required this.icon, this.color, this.wide = false, this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      child: Padding(
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
         padding: const EdgeInsets.all(16),
         child: Row(
           children: [
@@ -116,6 +120,7 @@ class _KpiCard extends StatelessWidget {
             )),
           ],
         ),
+      ),
       ),
     );
   }
