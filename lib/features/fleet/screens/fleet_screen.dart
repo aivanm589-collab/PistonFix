@@ -247,6 +247,13 @@ class _FleetScreenState extends State<FleetScreen> {
                 _loadFleets();
               } catch (e) {
                 debugPrint('Update plates error: $e');
+                final msg = e.toString().contains('unique_plates_notnull')
+                    ? 'Esa matrícula ya está asignada a otro vehículo'
+                    : 'Error al guardar: ${e}';
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(msg), backgroundColor: Colors.red));
+                }
               }
             },
             child: const Text('Guardar',
