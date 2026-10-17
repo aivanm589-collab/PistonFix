@@ -8,9 +8,20 @@ import '../../features/maintenance/screens/maintenance_screen.dart';
 import '../../features/fleet/screens/fleet_screen.dart';
 import '../../core/widgets/main_scaffold.dart';
 
+class _AuthNotifier extends ChangeNotifier {
+  _AuthNotifier() {
+    Supabase.instance.client.auth.onAuthStateChange.listen((_) {
+      notifyListeners();
+    });
+  }
+}
+
 class AppRouter {
+  static final _authNotifier = _AuthNotifier();
+
   static final router = GoRouter(
     initialLocation: '/dashboard',
+    refreshListenable: _authNotifier,
     redirect: (context, state) {
       final session = Supabase.instance.client.auth.currentSession;
       final isLogin = state.matchedLocation == '/login';
